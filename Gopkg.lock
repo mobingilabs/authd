@@ -15,9 +15,9 @@
 
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
-  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/ec2query","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/cloudwatch","service/dynamodb","service/dynamodb/dynamodbattribute","service/dynamodb/dynamodbiface","service/ec2","service/route53","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
-  revision = "e4f7e38b704e3ed0acc4a7f8196b777696f6f1f3"
-  version = "v1.12.30"
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/ec2query","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/cloudwatch","service/dynamodb","service/dynamodb/dynamodbattribute","service/dynamodb/dynamodbiface","service/ec2","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
+  revision = "a32b1dcd091264b5dee7b386149b6cc3823395c9"
+  version = "v1.12.31"
 
 [[projects]]
   name = "github.com/cenkalti/backoff"
@@ -59,7 +59,7 @@
   branch = "master"
   name = "github.com/guregu/dynamo"
   packages = [".","internal/exprs"]
-  revision = "711af6aeef816a709f2a655c3496a9da9b7da91a"
+  revision = "78f36f7876767b1899b4bac7381d109fe5a58539"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -93,7 +93,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/mobingilabs/sesha3"
-  packages = ["api","pkg/awsports","pkg/cert","pkg/execute","pkg/metrics","pkg/notify","pkg/params","pkg/session","pkg/token","pkg/util"]
+  packages = ["api","pkg/awsports","pkg/execute","pkg/metrics","pkg/notify","pkg/params","pkg/session","pkg/token","pkg/util"]
   revision = "86dac3ffbb6fe7821a3d5e036ad32062ea3f5bf3"
 
 [[projects]]
@@ -142,11 +142,11 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "0ac51a24ef1c37380f98ba8b98f56e3bffd59850"
+  revision = "328643532ee3c60c099171d4ce2cad0ca0354ca9"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5f6103db27e04b84ea344ed220f98ed72177206297cf4f447f7c64d2f473ff75"
+  inputs-digest = "bb4272779f920d5273e531df84f16e6c4c6566ccd0626d6285002c6c668f828e"
   solver-name = "gps-cdcl"
   solver-version = 1
