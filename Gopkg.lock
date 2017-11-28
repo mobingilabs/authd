@@ -16,8 +16,8 @@
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/ec2query","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/cloudwatch","service/dynamodb","service/dynamodb/dynamodbattribute","service/dynamodb/dynamodbiface","service/ec2","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
-  revision = "a32b1dcd091264b5dee7b386149b6cc3823395c9"
-  version = "v1.12.31"
+  revision = "0c22c3d22be15d3be3d22b8dedabbf5dd4304730"
+  version = "v1.12.34"
 
 [[projects]]
   name = "github.com/cenkalti/backoff"
@@ -87,14 +87,14 @@
 [[projects]]
   name = "github.com/mobingilabs/mobingi-sdk-go"
   packages = ["client","mobingi/alm","mobingi/credentials","mobingi/sesha3","mobingi/session","pkg/cmdline","pkg/debug","pkg/jwt","pkg/notification","pkg/private"]
-  revision = "a76f28bf6d41283b2ba5ea07affff9c2d74aed93"
-  version = "v0.1.27"
+  revision = "60282744cb55e139b09b9903b8684e4f7925d87b"
+  version = "v0.1.30"
 
 [[projects]]
   branch = "master"
   name = "github.com/mobingilabs/sesha3"
   packages = ["api","pkg/awsports","pkg/execute","pkg/metrics","pkg/notify","pkg/params","pkg/session","pkg/token","pkg/util"]
-  revision = "86dac3ffbb6fe7821a3d5e036ad32062ea3f5bf3"
+  revision = "f0afa917e1d611c0751ddb8fcc4da89cda1c3b42"
 
 [[projects]]
   name = "github.com/moul/gotty-client"
@@ -118,7 +118,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "19e54c4a2b8a78c9d54b2bed61b1a6c5e1bfcf6f"
+  revision = "1be1d2841c773c01bee8289f55f7463b6e2c2539"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -130,19 +130,19 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "9f005a07e0d31d45e6656d241bb5c0f2efd4bc94"
+  revision = "365904b0f3154c6e11a9cf541c9803d1dca0445a"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "9dfe39835686865bff950a07b394c12a98ddc811"
+  revision = "fc492d2e106922eb3aa4bca863d55e882c087ae3"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "328643532ee3c60c099171d4ce2cad0ca0354ca9"
+  revision = "a204229cd828a74741ee7b5da9bf4794497f85ed"
 
 [solve-meta]
   analyzer-name = "dep"

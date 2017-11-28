@@ -1,3 +1,47 @@
+Release v1.12.34 (2017-11-27)
+===
+
+### Service Client Updates
+* `service/data.mediastore`: Adds new service
+* `service/mediaconvert`: Adds new service
+  * AWS Elemental MediaConvert is a file-based video conversion service that transforms media into formats required for traditional broadcast and for internet streaming to multi-screen devices.
+* `service/medialive`: Adds new service
+  * AWS Elemental MediaLive is a video service that lets you easily create live outputs for broadcast and streaming delivery.
+* `service/mediapackage`: Adds new service
+  * AWS Elemental MediaPackage is a just-in-time video packaging and origination service that lets you format highly secure and reliable live outputs for a variety of devices.
+* `service/mediastore`: Adds new service
+  * AWS Elemental MediaStore is an AWS storage service optimized for media. It gives you the performance, consistency, and low latency required to deliver live and on-demand video content. AWS Elemental MediaStore acts as the origin store in your video workflow.
+
+Release v1.12.33 (2017-11-22)
+===
+
+### Service Client Updates
+* `service/acm`: Updates service API and documentation
+  * AWS Certificate Manager now supports the ability to import domainless certs and additional Key Types as well as an additional validation method for DNS.
+* `aws/endpoints`: Updated Regions and Endpoints metadata.
+
+Release v1.12.32 (2017-11-22)
+===
+
+### Service Client Updates
+* `service/apigateway`: Updates service API and documentation
+  * Add support for Access logs and customizable integration timeouts
+* `service/cloudformation`: Updates service API and documentation
+  * 1) Instance-level parameter overrides (CloudFormation-StackSet feature): This feature will allow the customers to override the template parameters on specific stackInstances. Customers will also have ability to update their existing instances with/without parameter-overrides using a new API "UpdateStackInstances"                                                                                                                                                                                                                                                         2) Add support for SSM parameters in CloudFormation - This feature will allow the customers to use Systems Manager parameters in CloudFormation templates. They will be able to see values for these parameters in Describe APIs.
+* `service/codebuild`: Updates service API and documentation
+  * Adding support for accessing Amazon VPC resources from AWS CodeBuild, dependency caching and build badges.
+* `service/elasticmapreduce`: Updates service API and documentation
+  * Enable Kerberos on Amazon EMR.
+* `aws/endpoints`: Updated Regions and Endpoints metadata.
+* `service/rekognition`: Updates service API and documentation
+  * This release includes updates to Amazon Rekognition for the following APIs. The new DetectText API allows you to recognize and extract textual content from images. Face Model Versioning has been added to operations that deal with face detection.
+* `service/shield`: Updates service API, documentation, and paginators
+  * The AWS Shield SDK has been updated in order to support Elastic IP address protections, the addition of AttackProperties objects in DescribeAttack responses, and a new GetSubscriptionState operation.
+* `service/storagegateway`: Updates service API and documentation
+  * AWS Storage Gateway now enables you to get notification when all your files written to your NFS file share have been uploaded to Amazon S3. Storage Gateway also enables guessing of the MIME type for uploaded objects based on file extensions.
+* `service/xray`: Updates service API, documentation, and paginators
+  * Added automatic pagination support for AWS X-Ray APIs in the SDKs that support this feature.
+
 Release v1.12.31 (2017-11-20)
 ===
 
