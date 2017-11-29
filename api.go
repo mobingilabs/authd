@@ -50,7 +50,7 @@ func (c *ApiController) DispatchScratch() {
 }
 
 func (c *ApiController) DispatchRoot() {
-	c.Ctx.ResponseWriter.Write([]byte("root001"))
+	c.Ctx.ResponseWriter.Write([]byte("root006"))
 }
 
 func (c *ApiController) DispatchToken() {
