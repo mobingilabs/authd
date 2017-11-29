@@ -56,11 +56,3 @@ func (c *ApiController) DispatchRoot() {
 func (c *ApiController) DispatchToken() {
 	c.Ctx.ResponseWriter.Write([]byte("Copyright (c) Mobingi. All rights reserved."))
 }
-
-func (c *ApiController) DispatchTtyUrl() {
-	c.Ctx.ResponseWriter.Write([]byte("Copyright (c) Mobingi. All rights reserved."))
-}
-
-func (c *ApiController) DispatchExec() {
-	c.Ctx.ResponseWriter.Write([]byte("Copyright (c) Mobingi. All rights reserved."))
-}
