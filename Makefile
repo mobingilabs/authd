@@ -14,7 +14,7 @@ $(BASE):
 # docker builds
 
 .PHONY: locald authdd authdp __docker_authdd __docker_authdp
-authdd: __checkenv __docker_authdd prune
+authdd: __docker_authdd prune
 authdp: __checkenv __docker_authdp prune
 
 # use kops id and secret
@@ -23,9 +23,7 @@ locald:
 	make prune;
 
 __docker_authdd:
-	@if test -z "$(DEV_PULLR_SNS_ARN)"; then echo "empty DEV_PULLR_SNS_ARN" && exit 1; fi; \
-	if test -z "$(DEV_PULLR_SQS_URL)"; then echo "empty DEV_PULLR_SQS_URL" && exit 1; fi; \
-	docker build -t $(PULLR_IMAGE_NAME) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(AWS_ACCESS_KEY_ID) --build-arg awssec=$(AWS_SECRET_ACCESS_KEY) --build-arg pullrsns=$(DEV_PULLR_SNS_ARN) --build-arg pullrsqs=$(DEV_PULLR_SQS_URL) .;
+	@docker build -t $(IMAGE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(AWS_ACCESS_KEY_ID) --build-arg awssec=$(AWS_SECRET_ACCESS_KEY) .;
 
 __docker_authdp:
 	@if test -z "$(PULLR_SNS_ARN)"; then echo "empty PULLR_SNS_ARN" && exit 1; fi; \
