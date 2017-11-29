@@ -41,10 +41,10 @@ on: __on prune
 off: __off prune
 
 __on:
-	@docker-compose up -d --build
+	@docker run --rm -d -p 8080:8080 --name authd authd
 
 __off:
-	@docker-compose down
+	@docker rm -f authd
 
 # misc
 
