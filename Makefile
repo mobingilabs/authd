@@ -50,12 +50,12 @@ __off:
 
 .PHONY: prune clean version list
 prune:
-	@docker system prune -f; \
-	docker rmi $(docker images --filter "dangling=true" -q --no-trunc); \
-	exit 0
+	@docker system prune -f
 
 clean:
-	@rm -rfv bin
+	@rm -rfv bin; \
+	docker rmi $(docker images --filter "dangling=true" -q --no-trunc); \
+	exit 0
 
 version:
 	@echo "Version: $(VERSION)"
