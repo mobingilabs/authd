@@ -5,7 +5,6 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/cmdline"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/debug"
-	"github.com/mobingilabs/sesha3/api"
 	"github.com/spf13/cobra"
 )
 
@@ -44,7 +43,7 @@ func serve(cmd *cobra.Command, args []string) {
 	// needed for http input body in request to be available for non-get and head reqs
 	beego.BConfig.CopyRequestBody = true
 
-	beego.Router("/", &api.ApiController{}, "get:DispatchRoot")
+	beego.Router("/", &ApiController{}, "get:DispatchRoot")
 
 	// try enable cors
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{

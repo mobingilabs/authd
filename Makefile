@@ -19,7 +19,7 @@ authdp: __checkenv __docker_authdp prune
 
 # use kops id and secret
 locald:
-	@docker build --rm -t authd:dev --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(KOPS_ACCESS_KEY_ID) --build-arg awssec=$(KOPS_SECRET_ACCESS_KEY) .; \
+	@docker build --rm -t authd --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(KOPS_ACCESS_KEY_ID) --build-arg awssec=$(KOPS_SECRET_ACCESS_KEY) .; \
 	make prune;
 
 __docker_authdd:

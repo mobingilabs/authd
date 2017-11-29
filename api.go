@@ -50,7 +50,7 @@ func (c *ApiController) DispatchScratch() {
 }
 
 func (c *ApiController) DispatchRoot() {
-	c.Ctx.ResponseWriter.Write([]byte("Copyright (c) Mobingi. All rights reserved."))
+	c.Ctx.ResponseWriter.Write([]byte("root001"))
 }
 
 func (c *ApiController) DispatchToken() {
