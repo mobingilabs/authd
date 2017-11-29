@@ -31,7 +31,7 @@ func serve(cmd *cobra.Command, args []string) {
 	goflag.Parse()
 
 	beego.BConfig.ServerName = "mobingi:authd:1.0.0"
-	beego.BConfig.RunMode = beego.PROD
+	beego.BConfig.RunMode = beego.DEV
 
 	// needed for http input body in request to be available for non-get and head reqs
 	beego.BConfig.CopyRequestBody = true

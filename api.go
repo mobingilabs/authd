@@ -1,40 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/astaxie/beego"
-	uuid "github.com/satori/go.uuid"
+	"github.com/golang/glog"
 )
 
 type ApiController struct {
 	beego.Controller
-	noAuth    bool
-	sessionId string
+	noAuth bool
 }
 
 func (c *ApiController) Prepare() {
-	if c.sessionId == "" {
-		c.sessionId = fmt.Sprintf("{%s}", uuid.NewV4())
-	}
-
 	// do auth by default
 	if !c.noAuth {
-		c.info("base auth:")
+		glog.Info("(todo) auth")
 	}
-}
-
-// info is our local info logger with session id as prefix.
-func (c *ApiController) info(v ...interface{}) {
-	m := fmt.Sprintln(v...)
-	log.Print(fmt.Sprintf("s-%s:info: %s", c.sessionId, m))
-}
-
-// info is our local error logger with session id as prefix.
-func (c *ApiController) err(v ...interface{}) {
-	m := fmt.Sprintln(v...)
-	log.Print(fmt.Sprintf("s-%s:error: %s", c.sessionId, m))
 }
 
 func (c *ApiController) DispatchScratch() {
@@ -43,13 +23,12 @@ func (c *ApiController) DispatchScratch() {
 		Value string `json:"value"`
 	}
 
-	c.info("hello info")
-	c.err("hello error")
 	c.Data["json"] = x{Name: "foo", Value: "bar"}
 	c.ServeJSON()
 }
 
 func (c *ApiController) DispatchRoot() {
+	glog.Info("controller:", c)
 	c.Ctx.ResponseWriter.Write([]byte("root006"))
 }
 
