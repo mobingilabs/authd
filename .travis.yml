@@ -39,8 +39,8 @@ script:
       kubectl config set clusters.mochi.k8s.local.server ${KUBE_SERVER};
       kubectl config set users.mochi.k8s.local.client-certificate-data ${KUBE_CLIENT_CERT};
       kubectl config set users.mochi.k8s.local.client-key-data ${KUBE_CLIENT_KEYDATA};
-      cat ${HOME}/.kube/config
-      kubectl set image deployment authd authd=${ECR_REPO_URI}/${IMAGE};
+      cat ${HOME}/.kube/config;
+      kubectl get deployments;
     else
       make;
     fi
