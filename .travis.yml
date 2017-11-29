@@ -30,7 +30,6 @@ script:
       docker images;
       docker tag ${IMAGE} ${ECR_REPO_URI}/${IMAGE};
       docker images;
-      # docker push ${ECR_REPO_URI}/${IMAGE};
     else
       make;
     fi
