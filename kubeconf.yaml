@@ -1,0 +1,19 @@
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data:
+    server:
+  name: mochi.k8s.local
+contexts:
+- context:
+    cluster: mochi.k8s.local
+    user: mochi.k8s.local
+  name: mochi.k8s.local
+current-context: mochi.k8s.local
+kind: Config
+preferences: {}
+users:
+- name: mochi.k8s.local
+  user:
+    client-certificate-data:
+    client-key-data:
