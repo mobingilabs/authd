@@ -20,8 +20,8 @@ script:
   - docker --version
   - go test -v ./... -cover
   - if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
-      export AWS_ACCESS_KEY_ID=${KOPS_ACCESS_KEY_ID};
-      export AWS_SECRET_ACCESS_KEY=${KOPS_SECRET_ACCESS_KEY};
+      export AWS_ACCESS_KEY_ID=${AUTHDCI_ACCESS_KEY_ID};
+      export AWS_SECRET_ACCESS_KEY=${AUTHDCI_SECRET_ACCESS_KEY};
       pip install --user awscli;
       export PATH=$PATH:$HOME/.local/bin;
       aws --version;
