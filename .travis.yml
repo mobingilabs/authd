@@ -28,7 +28,7 @@ script:
       eval $(aws ecr get-login --region ap-northeast-1);
       export IMAGE=authd:${TRAVIS_TAG};
       if [[ $TRAVIS_TAG == *"dev"* ]]; then
-        export TAGVER="${TRAVIS_TAG},build:`date -Ins`";
+        export TAGVER="tag:${TRAVIS_TAG},commit:${TRAVIS_COMMIT},build:`date -Ins`";
         make authdd;
       else
         make authdp;
