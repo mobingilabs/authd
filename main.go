@@ -18,16 +18,22 @@ import (
 )
 
 var (
+	version = "?"
+
 	rootCmd = &cobra.Command{
 		Use:   "authd",
 		Short: "authorization and authentication service for Mobingi",
 		Long:  "Authorization and authentication for Mobingi.",
-		Run:   serve,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			goflag.Parse()
+		},
+		Run: serve,
 	}
 
-	port   string
-	region string
-	bucket string
+	port     string
+	region   string
+	bucket   string
+	noverify bool
 )
 
 func init() {
@@ -35,12 +41,11 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&port, "port", "8080", "server port")
 	rootCmd.PersistentFlags().StringVar(&region, "aws-region", "ap-northeast-1", "aws region to access aws resources")
 	rootCmd.PersistentFlags().StringVar(&bucket, "token-bucket", "authd", "s3 bucket that contains our public/private pem files")
+	rootCmd.PersistentFlags().BoolVar(&noverify, "skip-verify", noverify, "skip token verification")
 	flag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 }
 
 func serve(cmd *cobra.Command, args []string) {
-	goflag.Parse()
-
 	beego.BConfig.ServerName = "mobingi:authd:1.0.0"
 	beego.BConfig.RunMode = beego.DEV
 
@@ -54,6 +59,7 @@ func serve(cmd *cobra.Command, args []string) {
 	}
 
 	beego.Router("/", &ApiController{}, "get:DispatchRoot")
+	beego.Router("/version", &ApiController{}, "get:DispatchVersion")
 
 	// enable cors
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
@@ -113,6 +119,7 @@ func downloadTokenFiles() error {
 
 	return nil
 }
+
 func main() {
 	err := rootCmd.Execute()
 	if err != nil {

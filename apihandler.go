@@ -37,6 +37,10 @@ func (c *ApiController) DispatchRoot() {
 	c.Ctx.ResponseWriter.Write([]byte("Copyright (c) Mobingi. All rights reserved."))
 }
 
+func (c *ApiController) DispatchVersion() {
+	c.Ctx.ResponseWriter.Write([]byte(version))
+}
+
 func (c *ApiController) DispatchToken() {
 	ctx, err := jwt.NewCtx()
 	if err != nil {
