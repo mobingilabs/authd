@@ -1,46 +1,46 @@
 sudo: required
 
 os:
-  - linux
+- linux
 
 language: go
 
 services:
-  - docker
+- docker
 
 go:
-  - 1.9.2
+- 1.9.2
 
 script:
-  - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-  - chmod +x ./kubectl
-  - sudo mv ./kubectl /usr/local/bin/kubectl
-  - mkdir ${HOME}/.kube
-  - cp ./kubeconf.yaml ${HOME}/.kube/config
-  - docker --version
-  - go test -v ./... -cover
-  - if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
-      export AWS_ACCESS_KEY_ID=${AUTHDCI_ACCESS_KEY_ID};
-      export AWS_SECRET_ACCESS_KEY=${AUTHDCI_SECRET_ACCESS_KEY};
-      pip install --user awscli;
-      export PATH=$PATH:$HOME/.local/bin;
-      aws --version;
-      eval $(aws ecr get-login --region ap-northeast-1);
-      export IMAGE=authd:${TRAVIS_TAG};
-      if [[ $TRAVIS_TAG == *"dev"* ]]; then
-        export TAGVER="tag:${TRAVIS_TAG};commit:${TRAVIS_COMMIT};build:`date -Ins`";
-        make authdd;
-      else
-        make authdp;
-      fi;
-      docker tag ${IMAGE} ${ECR_REPO_URI}/${IMAGE};
-      docker images;
-      docker push ${ECR_REPO_URI}/${IMAGE};
-      kubectl config set clusters.mochi.k8s.local.certificate-authority-data ${KUBE_CLUSTER_CERT};
-      kubectl config set clusters.mochi.k8s.local.server ${KUBE_SERVER};
-      kubectl config set users.mochi.k8s.local.client-certificate-data ${KUBE_CLIENT_CERT};
-      kubectl config set users.mochi.k8s.local.client-key-data ${KUBE_CLIENT_KEYDATA};
-      kubectl set image deployment authd authd=${ECR_REPO_URI}/${IMAGE};
+- curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+- chmod +x ./kubectl
+- sudo mv ./kubectl /usr/local/bin/kubectl
+- mkdir ${HOME}/.kube
+- cp ./kubeconf.yaml ${HOME}/.kube/config
+- docker --version
+- go test -v ./... -cover
+- if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
+    export AWS_ACCESS_KEY_ID=${AUTHDCI_ACCESS_KEY_ID};
+    export AWS_SECRET_ACCESS_KEY=${AUTHDCI_SECRET_ACCESS_KEY};
+    pip install --user awscli;
+    export PATH=$PATH:$HOME/.local/bin;
+    aws --version;
+    eval $(aws ecr get-login --region ap-northeast-1);
+    export IMAGE=authd:${TRAVIS_TAG};
+    if [[ $TRAVIS_TAG == *"dev"* ]]; then
+      export TAGVER="tag:${TRAVIS_TAG};commit:${TRAVIS_COMMIT};build:`date -Ins`";
+      make authdd;
     else
-      make;
-    fi
+      make authdp;
+    fi;
+    docker tag ${IMAGE} ${ECR_REPO_URI}/${IMAGE};
+    docker images;
+    docker push ${ECR_REPO_URI}/${IMAGE};
+    kubectl config set clusters.mochi.k8s.local.certificate-authority-data ${KUBE_CLUSTER_CERT};
+    kubectl config set clusters.mochi.k8s.local.server ${KUBE_SERVER};
+    kubectl config set users.mochi.k8s.local.client-certificate-data ${KUBE_CLIENT_CERT};
+    kubectl config set users.mochi.k8s.local.client-key-data ${KUBE_CLIENT_KEYDATA};
+    kubectl set image deployment authd authd=${ECR_REPO_URI}/${IMAGE};
+  else
+    make;
+  fi
