@@ -1,5 +1,5 @@
 VERSION ?= $(shell git describe --tags --always --dirty --match=v* 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null || echo v0)
-BLDVER = version:$(VERSION),build:$(shell date -Ins)
+BLDVER = version:$(VERSION);build:$(shell date -Ins)
 BASE = $(CURDIR)
 
 .PHONY: all

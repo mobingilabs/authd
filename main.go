@@ -30,6 +30,7 @@ var (
 		Run: serve,
 	}
 
+	tctx     *tokenctx
 	port     string
 	region   string
 	bucket   string
@@ -46,20 +47,28 @@ func init() {
 }
 
 func serve(cmd *cobra.Command, args []string) {
-	beego.BConfig.ServerName = "mobingi:authd:1.0.0"
+	beego.BConfig.ServerName = "mobingi:authd:" + version
 	beego.BConfig.RunMode = beego.DEV
 
 	// needed for http input body in request to be available for non-get and head reqs
 	beego.BConfig.CopyRequestBody = true
 
-	err := downloadTokenFiles()
+	pempub, pemprv, err := downloadTokenFiles()
 	if err != nil {
 		err = errors.Wrap(err, "download token files failed, fatal")
 		glog.Exit(err)
 	}
 
+	// tctx is global at the moment
+	tctx, err = NewCtx(pempub, pemprv)
+	if err != nil {
+		err = errors.Wrap(err, "token context create failed")
+		glog.Exit(err)
+	}
+
 	beego.Router("/", &ApiController{}, "get:DispatchRoot")
 	beego.Router("/version", &ApiController{}, "get:DispatchVersion")
+	beego.Router("/token", &ApiController{}, "post:DispatchToken")
 
 	// enable cors
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
@@ -74,7 +83,10 @@ func serve(cmd *cobra.Command, args []string) {
 	beego.Run(":" + port)
 }
 
-func downloadTokenFiles() error {
+func downloadTokenFiles() (string, string, error) {
+	var pempub, pemprv string
+	var err error
+
 	fnames := []string{"token.pem", "token.pem.pub"}
 	sess := session.Must(session.NewSession())
 	svc := s3.New(sess, &aws.Config{
@@ -88,7 +100,7 @@ func downloadTokenFiles() error {
 		if err != nil {
 			err = errors.Wrap(err, "mkdir failed: "+tmpdir)
 			glog.Error(err)
-			return err
+			return pempub, pemprv, err
 		}
 	}
 
@@ -99,7 +111,7 @@ func downloadTokenFiles() error {
 		if err != nil {
 			err = errors.Wrap(err, "create file failed: "+fl)
 			glog.Error(err)
-			return err
+			return pempub, pemprv, err
 		}
 
 		// write the contents of S3 Object to the file
@@ -111,13 +123,16 @@ func downloadTokenFiles() error {
 		if err != nil {
 			err = errors.Wrap(err, "s3 download failed: "+fl)
 			glog.Error(err)
-			return err
+			return pempub, pemprv, err
 		}
 
 		glog.Infof("download s3 file: %s (%v bytes)", i, n)
 	}
 
-	return nil
+	pempub = tmpdir + fnames[1]
+	pemprv = tmpdir + fnames[0]
+	glog.Info(pempub, ", ", pemprv)
+	return pempub, pemprv, err
 }
 
 func main() {

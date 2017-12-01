@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/golang/glog"
-	"github.com/mobingilabs/mobingi-sdk-go/pkg/jwt"
 )
 
 type status struct {
@@ -42,7 +41,8 @@ func (c *ApiController) DispatchVersion() {
 }
 
 func (c *ApiController) DispatchToken() {
-	ctx, err := jwt.NewCtx()
+	m := make(map[string]interface{})
+	tokenobj, stoken, err := tctx.GenerateToken(m)
 	if err != nil {
 		c.Data["json"] = c.serr(err)
 		glog.Error(err)
@@ -50,7 +50,12 @@ func (c *ApiController) DispatchToken() {
 		return
 	}
 
-	_ = ctx
+	glog.Info("token (obj):", tokenobj)
+	glog.Info("token:", stoken)
+	reply := make(map[string]string)
+	reply["key"] = stoken
+	c.Data["json"] = reply
+	c.ServeJSON()
 
 	/*
 		var creds credentials
