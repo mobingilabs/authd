@@ -9,9 +9,9 @@ ARG awssec
 ENV AWS_REGION=$awsrgn \
     AWS_ACCESS_KEY_ID=$awsid \
     AWS_SECRET_ACCESS_KEY=$awssec
-ADD . /go/src/authd
-WORKDIR /go/src/authd
+ADD . /go/src/github.com/mobingilabs/authd
+WORKDIR /go/src/github.com/mobingilabs/authd
 RUN go build -v -ldflags "-X main.version=$version"
 
-ENTRYPOINT ["/go/src/authd/authd"]
+ENTRYPOINT ["/go/src/github.com/mobingilabs/authd/authd"]
 CMD ["--logtostderr"]

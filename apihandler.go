@@ -1,8 +1,13 @@
 package main
 
+/*
 import (
+	"encoding/json"
+
 	"github.com/astaxie/beego"
 	"github.com/golang/glog"
+	"github.com/mobingilabs/mobingi-sdk-go/mobingi/sesha3"
+	"github.com/pkg/errors"
 )
 
 type status struct {
@@ -57,34 +62,32 @@ func (c *ApiController) DispatchToken() {
 	c.Data["json"] = reply
 	c.ServeJSON()
 
-	/*
-		var creds credentials
+	var creds credentials
 
-		c.info("body:", string(c.Ctx.Input.RequestBody))
-		err = json.Unmarshal(c.Ctx.Input.RequestBody, &creds)
-		if err != nil {
-			c.Ctx.ResponseWriter.Write(sesha3.NewSimpleError(err).Marshal())
-			c.err(errors.Wrap(err, "unmarshal body failed"))
-			return
-		}
+	c.info("body:", string(c.Ctx.Input.RequestBody))
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &creds)
+	if err != nil {
+		c.Ctx.ResponseWriter.Write(sesha3.NewSimpleError(err).Marshal())
+		c.err(errors.Wrap(err, "unmarshal body failed"))
+		return
+	}
 
-		m := make(map[string]interface{})
-		m["username"] = creds.Username
-		m["password"] = creds.Password
-		tokenobj, stoken, err := ctx.GenerateToken(m)
-		if err != nil {
-			c.Ctx.ResponseWriter.Write(sesha3.NewSimpleError(err).Marshal())
-			c.err(errors.Wrap(err, "generate token failed"))
-			return
-		}
+	m := make(map[string]interface{})
+	m["username"] = creds.Username
+	m["password"] = creds.Password
+	tokenobj, stoken, err := ctx.GenerateToken(m)
+	if err != nil {
+		c.Ctx.ResponseWriter.Write(sesha3.NewSimpleError(err).Marshal())
+		c.err(errors.Wrap(err, "generate token failed"))
+		return
+	}
 
-		c.info("token (obj):", tokenobj)
-		c.info("token:", stoken)
-		reply := make(map[string]string)
-		reply["key"] = stoken
-		c.Data["json"] = reply
-		c.ServeJSON()
-	*/
+	c.info("token (obj):", tokenobj)
+	c.info("token:", stoken)
+	reply := make(map[string]string)
+	reply["key"] = stoken
+	c.Data["json"] = reply
+	c.ServeJSON()
 }
 
 func (c *ApiController) serr(err error) status {
@@ -100,3 +103,4 @@ func (c *ApiController) sinfo(s string) status {
 		Description: s,
 	}
 }
+*/

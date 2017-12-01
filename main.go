@@ -4,13 +4,15 @@ import (
 	goflag "flag"
 	"os"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/golang/glog"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
+	"github.com/mobingilabs/authd/v1"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -27,7 +29,8 @@ var (
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			goflag.Parse()
 		},
-		Run: serve,
+		// Run: serve,
+		Run: serve2,
 	}
 
 	tctx     *tokenctx
@@ -46,6 +49,27 @@ func init() {
 	flag.CommandLine.AddGoFlagSet(goflag.CommandLine)
 }
 
+func serve2(cmd *cobra.Command, args []string) {
+	e := echo.New()
+
+	// middlewares
+	e.Use(middleware.CORS())
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set(echo.HeaderServer, "mobingi:authd:"+version)
+			return next(c)
+		}
+	})
+
+	// routes
+	v1.NewApiV1(e)
+
+	// serve
+	e.Server.Addr = ":" + port
+	gracehttp.Serve(e.Server)
+}
+
+/*
 func serve(cmd *cobra.Command, args []string) {
 	beego.BConfig.ServerName = "mobingi:authd:" + version
 	beego.BConfig.RunMode = beego.DEV
@@ -82,6 +106,7 @@ func serve(cmd *cobra.Command, args []string) {
 	glog.Info("start server: ", port)
 	beego.Run(":" + port)
 }
+*/
 
 func downloadTokenFiles() (string, string, error) {
 	var pempub, pemprv string
