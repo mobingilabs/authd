@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -43,13 +44,32 @@ type WrapperClaims struct {
 	jwt.StandardClaims
 }
 
+type creds struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func (a *apiv1) token(c echo.Context) error {
 	var stoken string
 	var claims WrapperClaims
+	var crds creds
+
+	err := c.Bind(&crds)
+	if err != nil {
+		glog.Error(err)
+	}
+
+	md5p := fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%s", crds.Password))))
+	valid, err := a.checkdb(crds.Username, md5p)
+	if err != nil {
+		glog.Error(err)
+	}
+
+	glog.Info("valid: ", valid)
 
 	m := make(map[string]interface{})
-	m["username"] = "foo"
-	m["password"] = "bar"
+	m["username"] = crds.Username
+	m["password"] = crds.Password
 	claims.Data = m
 	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)

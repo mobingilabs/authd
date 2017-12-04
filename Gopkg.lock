@@ -44,6 +44,12 @@
   revision = "1b76add642e42c6ffba7211ad7b3939ce654526e"
 
 [[projects]]
+  name = "github.com/fatih/color"
+  packages = ["."]
+  revision = "570b54cabe6b8eb0bc2dfce68d964677d63b5260"
+  version = "v1.5.0"
+
+[[projects]]
   name = "github.com/go-ini/ini"
   packages = ["."]
   revision = "32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a"
@@ -98,7 +104,7 @@
 
 [[projects]]
   name = "github.com/mobingilabs/mobingi-sdk-go"
-  packages = ["pkg/private"]
+  packages = ["pkg/debug","pkg/private"]
   revision = "60282744cb55e139b09b9903b8684e4f7925d87b"
   version = "v0.1.30"
 
@@ -153,6 +159,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cc1a0cbeb6ac7e37235ee565be969178a52ea836993b36563cf492958239ab7e"
+  inputs-digest = "60c325be669fbd882c67ede3226c0e0d7c54449d83c625e62748f29d4524fc1e"
   solver-name = "gps-cdcl"
   solver-version = 1
