@@ -33,7 +33,6 @@ var (
 		Run: serve2,
 	}
 
-	tctx     *tokenctx
 	port     string
 	region   string
 	bucket   string
