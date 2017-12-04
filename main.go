@@ -50,6 +50,12 @@ func init() {
 }
 
 func serve2(cmd *cobra.Command, args []string) {
+	_, pemprv, err := downloadTokenFiles()
+	if err != nil {
+		err = errors.Wrap(err, "download token files failed, fatal")
+		glog.Exit(err)
+	}
+
 	e := echo.New()
 
 	// middlewares
@@ -62,7 +68,7 @@ func serve2(cmd *cobra.Command, args []string) {
 	})
 
 	// routes
-	v1.NewApiV1(e)
+	v1.NewApiV1(e, pemprv)
 
 	// serve
 	e.Server.Addr = ":" + port
@@ -112,7 +118,8 @@ func downloadTokenFiles() (string, string, error) {
 	var pempub, pemprv string
 	var err error
 
-	fnames := []string{"token.pem", "token.pem.pub"}
+	// fnames := []string{"token.pem", "token.pem.pub"}
+	fnames := []string{"private.key", "public.key"}
 	sess := session.Must(session.NewSession())
 	svc := s3.New(sess, &aws.Config{
 		Region: aws.String(region),
