@@ -1,3 +1,9 @@
+Release v1.12.39 (2017-12-01)
+===
+
+### Service Client Updates
+* `service/SageMaker`: Updates service waiters
+
 Release v1.12.38 (2017-11-30)
 ===
 
@@ -10,7 +16,7 @@ Release v1.12.38 (2017-11-30)
 * `service/ec2`: Updates service API and documentation
   * Adds the following updates: 1. Spread Placement ensures that instances are placed on distinct hardware in order to reduce correlated failures. 2. Inter-region VPC Peering allows customers to peer VPCs across different AWS regions without requiring additional gateways, VPN connections or physical hardware
 * `service/lambda`: Updates service API and documentation
-  * AWS Lambda now supports the ability to set the concurrency limits for individual functions, and increasing memory to 3008 GB.
+  * AWS Lambda now supports the ability to set the concurrency limits for individual functions, and increasing memory to 3008 MB.
 
 Release v1.12.37 (2017-11-30)
 ===

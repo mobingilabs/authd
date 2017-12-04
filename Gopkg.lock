@@ -3,9 +3,15 @@
 
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
-  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
-  revision = "b00fb575f3373d28ad8b5d259e12f2314f3efa31"
-  version = "v1.12.38"
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/dynamodb","service/dynamodb/dynamodbattribute","service/dynamodb/dynamodbiface","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
+  revision = "388e6676807f5968ad5eaaec0c70002f80c20b84"
+  version = "v1.12.39"
+
+[[projects]]
+  name = "github.com/cenkalti/backoff"
+  packages = ["."]
+  revision = "61153c768f31ee5f130071d08fc82b85208528de"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
@@ -48,6 +54,12 @@
   name = "github.com/golang/glog"
   packages = ["."]
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/guregu/dynamo"
+  packages = [".","internal/exprs"]
+  revision = "78f36f7876767b1899b4bac7381d109fe5a58539"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -100,7 +112,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "1be1d2841c773c01bee8289f55f7463b6e2c2539"
+  revision = "86783686cade7a5ea7f5306d461d91841c7a6b3d"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -128,6 +140,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "a8b9294777976932365dabb6640cf1468d95c70f"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "8b4580aae2a0dd0c231a45d3ccb8434ff533b840"
@@ -135,6 +153,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2a4dff5463eae766108278f187e6163f5aef6469b2ff66fb277a6a2a048fcbdc"
+  inputs-digest = "cc1a0cbeb6ac7e37235ee565be969178a52ea836993b36563cf492958239ab7e"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -50,7 +50,7 @@ func init() {
 }
 
 func serve2(cmd *cobra.Command, args []string) {
-	_, pemprv, err := downloadTokenFiles()
+	pempub, pemprv, err := downloadTokenFiles()
 	if err != nil {
 		err = errors.Wrap(err, "download token files failed, fatal")
 		glog.Exit(err)
@@ -68,7 +68,11 @@ func serve2(cmd *cobra.Command, args []string) {
 	})
 
 	// routes
-	v1.NewApiV1(e, pemprv)
+	v1.NewApiV1(e, &v1.ApiV1Config{
+		PublicPemFile:  pempub,
+		PrivatePemFile: pemprv,
+		AwsRegion:      region,
+	})
 
 	// serve
 	e.Server.Addr = ":" + port
