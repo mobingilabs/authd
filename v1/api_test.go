@@ -12,13 +12,12 @@ import (
 )
 
 func TestValidatePerf(t *testing.T) {
-	// return
+	return
 	u := os.Getenv("MOBINGI_USERNAME")
 	p := os.Getenv("MOBINGI_PASSWORD")
 	if u != "" && p != "" {
 		for i := 0; i < 100; i++ {
 			start := time.Now()
-			// r, err := http.NewRequest(http.MethodPost, "http://54.199.197.6:30100/api/v1/token")
 			c := creds{
 				Username: u,
 				Password: p,
@@ -36,7 +35,7 @@ func TestValidatePerf(t *testing.T) {
 			}
 
 			end := time.Now()
-			debug.Info(resp)
+			_ = resp
 			debug.Info("delta:", end.Sub(start))
 		}
 	}
