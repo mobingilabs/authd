@@ -11,7 +11,7 @@ ENV AWS_REGION=$awsrgn \
     AWS_SECRET_ACCESS_KEY=$awssec
 ADD . /go/src/github.com/mobingilabs/authd
 WORKDIR /go/src/github.com/mobingilabs/authd
-RUN go build -v -ldflags "-X main.version=$version"
+RUN go build -v -ldflags "-X github.com/mobingilabs/authd/cmd.version=$version"
 
 ENTRYPOINT ["/go/src/github.com/mobingilabs/authd/authd"]
-CMD ["--logtostderr"]
+CMD ["serve", "--logtostderr"]
