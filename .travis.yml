@@ -27,8 +27,7 @@ script:
     aws --version;
     eval $(aws ecr get-login --no-include-email --region ap-northeast-1);
     export IMAGE=oath:${TRAVIS_COMMIT};
-    export TAGVER="commit:${TRAVIS_COMMIT};build:`date -Ins`";
-    make oathd;
+    IMAGE=${IMAGE} make oathd;
     docker tag ${IMAGE} ${ECR_REPO_URI}/${IMAGE};
     docker images;
     docker push ${ECR_REPO_URI}/${IMAGE};

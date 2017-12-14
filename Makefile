@@ -1,12 +1,13 @@
 VERSION ?= $(shell git describe --tags --always --dirty --match=v* 2> /dev/null || cat $(CURDIR)/.version 2> /dev/null || echo v0)
-BLDVER = version:$(VERSION);build:$(shell date -Ins)
+BLDVER = module:$(MODULE),version:$(VERSION),build:$(shell date +"%Y%m%d.%H%M%S.%N.%z")
 BASE = $(CURDIR)
+MODULE = oath
 
 .PHONY: all
-all: version oath
+all: version $(MODULE)
 
-.PHONY: oath
-oath:| $(BASE)
+.PHONY: $(MODULE)
+$(MODULE):| $(BASE)
 	@go build -v -o $(BASE)/bin/$@
 
 $(BASE):
@@ -20,11 +21,11 @@ oathp: __checkenv __docker_oathp prune
 
 # use kops id and secret
 locald:
-	docker build --rm -t oath --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .
+	docker build --rm -t $(MODULE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .
 	make prune
 
 __docker_oathd:
-	docker build -t $(IMAGE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(TAGVER)" .
+	docker build -t $(IMAGE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .
 
 __docker_oathp:
 	@if test -z "$(PULLR_SNS_ARN)"; then echo "empty PULLR_SNS_ARN" && exit 1; fi; \
