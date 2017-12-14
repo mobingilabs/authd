@@ -20,11 +20,11 @@ oathp: __checkenv __docker_oathp prune
 
 # use kops id and secret
 locald:
-	@docker build --rm -t oath --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(AUTHD_ACCESS_KEY_ID) --build-arg awssec=$(AUTHD_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .; \
-	make prune;
+	docker build --rm -t oath --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .
+	make prune
 
 __docker_oathd:
-	@docker build -t $(IMAGE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(AUTHD_ACCESS_KEY_ID) --build-arg awssec=$(AUTHD_SECRET_ACCESS_KEY) --build-arg version="$(TAGVER)" .;
+	docker build -t $(IMAGE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(TAGVER)" .
 
 __docker_oathp:
 	@if test -z "$(PULLR_SNS_ARN)"; then echo "empty PULLR_SNS_ARN" && exit 1; fi; \
@@ -61,6 +61,5 @@ clean:
 version:
 	@echo "Version: $(VERSION)"
 
-# From https://stackoverflow.com/questions/4219255/how-do-you-get-the-list-of-targets-in-a-makefile
 list:
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | xargs
