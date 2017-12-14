@@ -38,7 +38,7 @@ func ServeCmd() *cobra.Command {
 	cmd.Flags().SortFlags = false
 	cmd.Flags().StringVar(&port, "port", "8080", "server port")
 	cmd.Flags().StringVar(&region, "aws-region", "ap-northeast-1", "aws region to access region")
-	cmd.Flags().StringVar(&bucket, "token-bucket", "oath", "s3 bucket that contains our key files")
+	cmd.Flags().StringVar(&bucket, "token-bucket", "oath-store", "s3 bucket that contains our key files")
 	return cmd
 }
 
