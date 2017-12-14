@@ -19,20 +19,16 @@ script:
 - cp ./kubeconf.yaml ${HOME}/.kube/config
 - docker --version
 - go test -v ./... -cover
-- if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then
     export AWS_ACCESS_KEY_ID=${OATHCI_ACCESS_KEY_ID};
     export AWS_SECRET_ACCESS_KEY=${OATHCI_SECRET_ACCESS_KEY};
     pip install --user awscli;
     export PATH=$PATH:$HOME/.local/bin;
     aws --version;
     eval $(aws ecr get-login --no-include-email --region ap-northeast-1);
-    export IMAGE=oath:${TRAVIS_TAG};
-    if [[ $TRAVIS_TAG == *"dev"* ]]; then
-      export TAGVER="tag:${TRAVIS_TAG};commit:${TRAVIS_COMMIT};build:`date -Ins`";
-      make oathd;
-    else
-      make oathp;
-    fi;
+    export IMAGE=oath:${TRAVIS_COMMIT};
+    export TAGVER="commit:${TRAVIS_COMMIT};build:`date -Ins`";
+    make oathd;
     docker tag ${IMAGE} ${ECR_REPO_URI}/${IMAGE};
     docker images;
     docker push ${ECR_REPO_URI}/${IMAGE};
