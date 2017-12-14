@@ -20,18 +20,18 @@ script:
 - docker --version
 - go test -v ./... -cover
 - if [[ "$TRAVIS_BRANCH" == "$TRAVIS_TAG" ]]; then
-    export AWS_ACCESS_KEY_ID=${AUTHDCI_ACCESS_KEY_ID};
-    export AWS_SECRET_ACCESS_KEY=${AUTHDCI_SECRET_ACCESS_KEY};
+    export AWS_ACCESS_KEY_ID=${OATHCI_ACCESS_KEY_ID};
+    export AWS_SECRET_ACCESS_KEY=${OATHCI_SECRET_ACCESS_KEY};
     pip install --user awscli;
     export PATH=$PATH:$HOME/.local/bin;
     aws --version;
-    eval $(aws ecr get-login --region ap-northeast-1);
-    export IMAGE=authd:${TRAVIS_TAG};
+    eval $(aws ecr get-login --no-include-email --region ap-northeast-1);
+    export IMAGE=oath:${TRAVIS_TAG};
     if [[ $TRAVIS_TAG == *"dev"* ]]; then
       export TAGVER="tag:${TRAVIS_TAG};commit:${TRAVIS_COMMIT};build:`date -Ins`";
-      make authdd;
+      make oathd;
     else
-      make authdp;
+      make oathp;
     fi;
     docker tag ${IMAGE} ${ECR_REPO_URI}/${IMAGE};
     docker images;
@@ -40,7 +40,7 @@ script:
     kubectl config set clusters.mochi.k8s.local.server ${KUBE_SERVER};
     kubectl config set users.mochi.k8s.local.client-certificate-data ${KUBE_CLIENT_CERT};
     kubectl config set users.mochi.k8s.local.client-key-data ${KUBE_CLIENT_KEYDATA};
-    kubectl set image deployment authd authd=${ECR_REPO_URI}/${IMAGE};
+    kubectl set image deployment oath oath=${ECR_REPO_URI}/${IMAGE};
   else
     make;
   fi

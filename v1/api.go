@@ -20,7 +20,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/guregu/dynamo"
 	"github.com/labstack/echo"
-	"github.com/mobingilabs/authd/pkg/token"
+	"github.com/mobingilabs/oath/pkg/token"
 	"github.com/pkg/errors"
 )
 
@@ -284,7 +284,7 @@ func (a *apiv1) dockerToken(c echo.Context) error {
 		}
 	*/
 
-	// realm := "authd-realm"
+	// realm := "oath-realm"
 	// passwdFile := "nil"
 
 	/*

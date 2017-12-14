@@ -9,7 +9,7 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "authd",
+		Use:   "oath",
 		Short: "authorization and authentication service for Mobingi",
 		Long:  "Authorization and authentication for Mobingi.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {

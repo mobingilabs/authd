@@ -10,8 +10,8 @@
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/dynamodb","service/dynamodb/dynamodbattribute","service/dynamodb/dynamodbiface","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
-  revision = "a9c63ac6fd79402f91191c2e0a1348d0b8968e6c"
-  version = "v1.12.41"
+  revision = "25ef42b41b82230caae56ab23d872c81fb5c0eae"
+  version = "v1.12.46"
 
 [[projects]]
   name = "github.com/cenkalti/backoff"
@@ -145,10 +145,10 @@
   version = "v0.8.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "de2d9c4eca8f3c1de17d48b096b6504e0296f003"
+  revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
+  version = "v0.0.1"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -178,17 +178,17 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context"]
-  revision = "a8b9294777976932365dabb6640cf1468d95c70f"
+  revision = "d866cfc389cec985d6fda2859936a575a55a3ab6"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "8b4580aae2a0dd0c231a45d3ccb8434ff533b840"
+  revision = "1d2aa6dbdea45adaaebb9905d0666e4537563829"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9094d3bdbafd989c9e95985306297e460e364442c74f8a6e4407224a52563ccb"
+  inputs-digest = "d4d3674b35aa35650e59e83a30340b663962ac389ecf1763c204bfdf08db60d5"
   solver-name = "gps-cdcl"
   solver-version = 1

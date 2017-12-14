@@ -14,9 +14,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/mobingilabs/authd/pkg/token"
-	"github.com/mobingilabs/authd/v1"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
+	"github.com/mobingilabs/oath/pkg/token"
+	"github.com/mobingilabs/oath/v1"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -38,7 +38,7 @@ func ServeCmd() *cobra.Command {
 	cmd.Flags().SortFlags = false
 	cmd.Flags().StringVar(&port, "port", "8080", "server port")
 	cmd.Flags().StringVar(&region, "aws-region", "ap-northeast-1", "aws region to access region")
-	cmd.Flags().StringVar(&bucket, "token-bucket", "authd", "s3 bucket that contains our key files")
+	cmd.Flags().StringVar(&bucket, "token-bucket", "oath", "s3 bucket that contains our key files")
 	return cmd
 }
 
@@ -53,7 +53,7 @@ func serve(cmd *cobra.Command, args []string) {
 	e.Use(middleware.CORS())
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			c.Response().Header().Set(echo.HeaderServer, "mobingi:authd:"+version)
+			c.Response().Header().Set(echo.HeaderServer, "mobingi:oath:"+version)
 			return next(c)
 		}
 	})
