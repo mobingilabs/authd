@@ -48,6 +48,16 @@ func serve(cmd *cobra.Command, args []string) {
 
 	e := echo.New()
 	e.Use(middleware.CORS())
+
+	// some information about request
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			glog.Infof("remoteaddr: %v", c.Request().RemoteAddr)
+			return next(c)
+		}
+	})
+
+	// add server name in response
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Response().Header().Set(echo.HeaderServer, "mobingi:oath:"+version)
