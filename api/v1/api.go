@@ -2,6 +2,7 @@ package v1
 
 import (
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -54,6 +55,16 @@ type creds struct {
 	Password string `json:"password"`
 }
 
+type tokenPayload struct {
+	Key string `json:"key"`
+}
+
+func (a *apiv1) simpleResponse(c echo.Context, code int, m string) error {
+	resp := map[string]string{}
+	resp["message"] = m
+	return c.JSON(code, resp)
+}
+
 func (a *apiv1) token(c echo.Context) error {
 	var stoken string
 	var claims WrapperClaims
@@ -62,15 +73,16 @@ func (a *apiv1) token(c echo.Context) error {
 	err := c.Bind(&crds)
 	if err != nil {
 		glog.Errorf("bind failed: %v", err)
+		return err
 	}
 
 	md5p := fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%s", crds.Password))))
 	valid, err := a.checkdb(crds.Username, md5p)
-	if err != nil {
+	if !valid || err != nil {
 		glog.Errorf("checkdb failed: %v", err)
+		a.simpleResponse(c, http.StatusUnauthorized, "invalid user")
+		return err
 	}
-
-	glog.Infof("valid: %v", valid)
 
 	m := make(map[string]interface{})
 	m["username"] = crds.Username
@@ -81,34 +93,34 @@ func (a *apiv1) token(c echo.Context) error {
 	key, err := jwt.ParseRSAPrivateKeyFromPEM(a.prv)
 	if err != nil {
 		glog.Errorf("parse private key from pem failed: %v", err)
+		return err
 	}
 
 	stoken, err = token.SignedString(key)
 	if err != nil {
 		glog.Errorf("signed string failed: %v", err)
+		return err
 	}
 
-	// return token, stoken, nil
-	return c.String(http.StatusOK, stoken)
+	resp := tokenPayload{Key: stoken}
+	return c.JSON(http.StatusOK, resp)
 }
 
 func (a *apiv1) verify(c echo.Context) error {
-	type token_t struct {
-		Key string `json:"key"`
-	}
-
-	var tkn token_t
+	var tkn tokenPayload
 
 	err := c.Bind(&tkn)
 	if err != nil {
 		glog.Errorf("bind failed: %v", err)
+		return err
 	}
 
-	glog.Infof("token received: %v", tkn.Key)
+	glog.Infof("body received: %+v", tkn)
 
 	key, err := jwt.ParseRSAPublicKeyFromPEM(a.pub)
 	if err != nil {
 		glog.Errorf("parse public key from pem failed: %v", err)
+		return err
 	}
 
 	var claims WrapperClaims
@@ -123,10 +135,19 @@ func (a *apiv1) verify(c echo.Context) error {
 
 	if err != nil {
 		glog.Errorf("parse with claims failed: %v", err)
+		return err
 	}
 
 	glog.Infof("token raw: %v, valid: %v", t.Raw, t.Valid)
-	return c.String(http.StatusOK, t.Raw)
+
+	code := http.StatusOK
+	msg := "valid token"
+	if !t.Valid {
+		code = http.StatusUnauthorized
+		msg = "invalid token"
+	}
+
+	return a.simpleResponse(c, code, msg)
 }
 
 func (a *apiv1) checkdb(uname string, pwdmd5 string) (bool, error) {
@@ -171,25 +192,29 @@ func (a *apiv1) checkdb(uname string, pwdmd5 string) (bool, error) {
 	resp, err := dbsvc.Query(queryInput)
 	if err != nil {
 		glog.Errorf("query failed: %v", err)
-	} else {
-		ru := []root{}
-		err = dynamodbattribute.UnmarshalListOfMaps(resp.Items, &ru)
-		if err != nil {
-			glog.Errorf("dynamo unmarshal failed: %v", err)
-		}
+		return ret, err
+	}
 
-		glog.Infof("root (raw): %v", ru)
+	ru := []root{}
+	err = dynamodbattribute.UnmarshalListOfMaps(resp.Items, &ru)
+	if err != nil {
+		glog.Errorf("dynamo unmarshal failed: %v", err)
+		return ret, err
+	}
 
-		// should be a valid root user
-		for _, u := range ru {
-			if u.Email == uname && u.Password == pwdmd5 {
-				if u.Status == "" || u.Status == "trial" {
-					glog.Infof("valid root user: %v", uname)
-					ret = true
-					break
-				}
+	// should be a valid root user
+	for _, u := range ru {
+		if u.Email == uname && u.Password == pwdmd5 {
+			if u.Status == "" || u.Status == "trial" {
+				glog.Infof("valid root user: %v", uname)
+				ret = true
+				break
 			}
 		}
+	}
+
+	if !ret {
+		return ret, errors.New("invalid user")
 	}
 
 	return ret, err

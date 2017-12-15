@@ -22,7 +22,6 @@ oathp: __checkenv __docker_oathp prune
 # use kops id and secret
 locald:
 	docker build --rm -t $(MODULE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .
-	make prune
 
 __docker_oathd:
 	docker build -t $(IMAGE) --build-arg awsrgn=ap-northeast-1 --build-arg awsid=$(OATH_ACCESS_KEY_ID) --build-arg awssec=$(OATH_SECRET_ACCESS_KEY) --build-arg version="$(BLDVER)" .
@@ -39,14 +38,14 @@ __checkenv:
 # docker run containers
 
 .PHONY: on __on off __off
-on: __on prune
+on: locald __on
 off: __off prune
 
 __on:
-	@docker run --rm -d -p 8080:8080 --name oath oath
+	@docker run --rm -d -p 8080:8080 --name $(MODULE) $(MODULE)
 
 __off:
-	@docker rm -f oath
+	@docker rm -f $(MODULE)
 
 # misc
 
