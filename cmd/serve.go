@@ -13,7 +13,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
-	"github.com/mobingilabs/oath/v1"
+	"github.com/mobingilabs/oath/api/v1"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
