@@ -25,14 +25,6 @@ func key(cmd *cobra.Command, args []string) {
 		debug.ErrorExit("filename not supplied", 1)
 	}
 
-	/*
-		// generate private key
-		issuer := &token.TokenIssuer{}
-		issuer.SigningKey, err = libtrust.GenerateECP256PrivateKey()
-		glog.Info("keyid: ", issuer.SigningKey.KeyID())
-		glog.Info("string: ", issuer.SigningKey.String())
-	*/
-
 	// try saving file
 	pkfile := args[0]
 	debug.Info("pkfile:", pkfile)

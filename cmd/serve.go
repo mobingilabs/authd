@@ -3,19 +3,16 @@ package cmd
 import (
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"github.com/docker/libtrust"
 	"github.com/facebookgo/grace/gracehttp"
 	"github.com/golang/glog"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
-	"github.com/mobingilabs/oath/pkg/token"
 	"github.com/mobingilabs/oath/v1"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -37,7 +34,7 @@ func ServeCmd() *cobra.Command {
 
 	cmd.Flags().SortFlags = false
 	cmd.Flags().StringVar(&port, "port", "8080", "server port")
-	cmd.Flags().StringVar(&region, "aws-region", "ap-northeast-1", "aws region to access region")
+	cmd.Flags().StringVar(&region, "aws-region", "ap-northeast-1", "aws region to access resources")
 	cmd.Flags().StringVar(&bucket, "token-bucket", "oath-store", "s3 bucket that contains our key files")
 	return cmd
 }
@@ -68,17 +65,11 @@ func serve(cmd *cobra.Command, args []string) {
 		return nil
 	})
 
-	issuer := &token.TokenIssuer{
-		Expiration: 24 * time.Hour,
-	}
-	issuer.SigningKey, err = libtrust.LoadKeyFile("./testkey")
-
 	// routes
 	v1.NewApiV1(e, &v1.ApiV1Config{
 		PublicPemFile:  pempub,
 		PrivatePemFile: pemprv,
 		AwsRegion:      region,
-		Issuer:         issuer,
 	})
 
 	// serve
@@ -90,7 +81,6 @@ func downloadTokenFiles() (string, string, error) {
 	var pempub, pemprv string
 	var err error
 
-	// fnames := []string{"token.pem", "token.pem.pub"}
 	fnames := []string{"private.key", "public.key"}
 	sess := session.Must(session.NewSession())
 	svc := s3.New(sess, &aws.Config{
@@ -118,7 +108,6 @@ func downloadTokenFiles() (string, string, error) {
 			return pempub, pemprv, err
 		}
 
-		// write the contents of S3 Object to the file
 		n, err := downloader.Download(f, &s3.GetObjectInput{
 			Bucket: aws.String(bucket),
 			Key:    aws.String(i),
@@ -136,5 +125,6 @@ func downloadTokenFiles() (string, string, error) {
 	pempub = tmpdir + fnames[1]
 	pemprv = tmpdir + fnames[0]
 	glog.Info(pempub, ", ", pemprv)
+
 	return pempub, pemprv, err
 }

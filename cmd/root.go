@@ -9,9 +9,7 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "oath",
-		Short: "authorization and authentication service for Mobingi",
-		Long:  "Authorization and authentication for Mobingi.",
+		Long: "Authorization and authentication service for Mobingi.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			goflag.Parse()
 		},
