@@ -105,7 +105,7 @@ func serve(cmd *cobra.Command, args []string) {
 	})
 
 	// serve
-	glog.Infof("serve: %v", port)
+	glog.Infof("serving on :%v", port)
 	e.Server.Addr = ":" + port
 	gracehttp.Serve(e.Server)
 }
