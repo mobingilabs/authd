@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/json/jsonutil","private/protocol/jsonrpc","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/dynamodb","service/dynamodb/dynamodbattribute","service/dynamodb/dynamodbiface","service/s3","service/s3/s3iface","service/s3/s3manager","service/sts"]
-  revision = "ed448bf2aa437d03a95b925a17f7ed5380353559"
-  version = "v1.12.47"
+  revision = "fd9b7491525896e01db35c1e20a5bd94bf11491c"
+  version = "v1.12.48"
 
 [[projects]]
   name = "github.com/cenkalti/backoff"
@@ -121,6 +121,12 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
@@ -148,7 +154,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["acme","acme/autocert"]
-  revision = "94eea52f7b742c7cbe0b03b22f0c4c8631ece122"
+  revision = "244f6ce1f09cc9f3d7bffe29b033aaa13c0cc2f3"
 
 [[projects]]
   branch = "master"
@@ -160,11 +166,11 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "1d2aa6dbdea45adaaebb9905d0666e4537563829"
+  revision = "571f7bbbe08da2a8955aed9d4db316e78630e9a3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a1e634554ae33a2c9ff677d8aab0ae8cf5665abd9448eca05dc35a8ae7050b4b"
+  inputs-digest = "b68e1ea16d1de345ab94da3e897231f0314f5982d442607e10a3e5717e841bc2"
   solver-name = "gps-cdcl"
   solver-version = 1

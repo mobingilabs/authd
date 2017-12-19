@@ -3,6 +3,7 @@ package cmd
 import (
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -15,6 +16,7 @@ import (
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
 	"github.com/mobingilabs/oath/api/v1"
 	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -47,6 +49,18 @@ func serve(cmd *cobra.Command, args []string) {
 	}
 
 	e := echo.New()
+
+	// time in, should be the first middleware
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cid := uuid.NewV4().String()
+			c.Set("contextid", cid)
+			c.Set("starttime", time.Now())
+			glog.Infof("--> %v", cid)
+			return next(c)
+		}
+	})
+
 	e.Use(middleware.CORS())
 
 	// some information about request
@@ -61,6 +75,15 @@ func serve(cmd *cobra.Command, args []string) {
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Response().Header().Set(echo.HeaderServer, "mobingi:oath:"+version)
+			return next(c)
+		}
+	})
+
+	// time out, should be the last middleware
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			start := c.Get("starttime").(time.Time)
+			glog.Infof("<-- %v, delta: %v", c.Get("contextid"), time.Now().Sub(start))
 			return next(c)
 		}
 	})
@@ -83,6 +106,7 @@ func serve(cmd *cobra.Command, args []string) {
 	})
 
 	// serve
+	glog.Infof("serve @%v", port)
 	e.Server.Addr = ":" + port
 	gracehttp.Serve(e.Server)
 }
