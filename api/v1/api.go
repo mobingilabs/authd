@@ -65,7 +65,13 @@ func (a *apiv1) simpleResponse(c echo.Context, code int, m string) error {
 	return c.JSON(code, resp)
 }
 
+func (a *apiv1) elapsed(c echo.Context) {
+	fn := c.Get("fnelapsed").(func(echo.Context))
+	fn(c)
+}
+
 func (a *apiv1) token(c echo.Context) error {
+	defer a.elapsed(c)
 	var stoken string
 	var claims WrapperClaims
 	var crds creds

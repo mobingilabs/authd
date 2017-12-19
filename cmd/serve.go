@@ -56,6 +56,14 @@ func serve(cmd *cobra.Command, args []string) {
 			cid := uuid.NewV4().String()
 			c.Set("contextid", cid)
 			c.Set("starttime", time.Now())
+
+			// Helper func to print the elapsed time since this middleware. Good to call at end of
+			// request handlers, right before/after replying to caller.
+			c.Set("fnelapsed", func(ctx echo.Context) {
+				start := ctx.Get("starttime").(time.Time)
+				glog.Infof("<-- %v, delta: %v", ctx.Get("contextid"), time.Now().Sub(start))
+			})
+
 			glog.Infof("--> %v", cid)
 			return next(c)
 		}
@@ -79,15 +87,6 @@ func serve(cmd *cobra.Command, args []string) {
 		}
 	})
 
-	// time out, should be the last middleware
-	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			start := c.Get("starttime").(time.Time)
-			glog.Infof("<-- %v, delta: %v", c.Get("contextid"), time.Now().Sub(start))
-			return next(c)
-		}
-	})
-
 	e.GET("/", func(c echo.Context) error {
 		c.String(http.StatusOK, "Copyright (c) Mobingi, 2015-2017. All rights reserved.")
 		return nil
@@ -106,7 +105,7 @@ func serve(cmd *cobra.Command, args []string) {
 	})
 
 	// serve
-	glog.Infof("serve @%v", port)
+	glog.Infof("serve: %v", port)
 	e.Server.Addr = ":" + port
 	gracehttp.Serve(e.Server)
 }
