@@ -38,7 +38,7 @@ __checkenv:
 # docker run containers
 
 .PHONY: on __on off __off
-on: locald __on
+on: locald __on prune
 off: __off prune
 
 __on:

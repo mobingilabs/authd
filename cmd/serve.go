@@ -3,6 +3,7 @@ package cmd
 import (
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -15,6 +16,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
 	"github.com/mobingilabs/oath/api/v1"
+	"github.com/mobingilabs/oath/pkg/constants"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
@@ -121,23 +123,20 @@ func downloadTokenFiles() (string, string, error) {
 	})
 
 	// create dir if necessary
-	tmpdir := os.TempDir() + "/jwt/rsa/"
-	if !private.Exists(tmpdir) {
-		err := os.MkdirAll(tmpdir, 0700)
+	if !private.Exists(constants.DATADIR) {
+		err := os.MkdirAll(constants.DATADIR, 0700)
 		if err != nil {
-			err = errors.Wrap(err, "mkdir failed: "+tmpdir)
-			glog.Error(err)
+			glog.Errorf("mkdirall failed: %v", err)
 			return pempub, pemprv, err
 		}
 	}
 
 	downloader := s3manager.NewDownloaderWithClient(svc)
 	for _, i := range fnames {
-		fl := tmpdir + i
+		fl := filepath.Join(constants.DATADIR, i)
 		f, err := os.Create(fl)
 		if err != nil {
-			err = errors.Wrap(err, "create file failed: "+fl)
-			glog.Error(err)
+			glog.Errorf("create file failed: %v", err)
 			return pempub, pemprv, err
 		}
 
@@ -147,17 +146,16 @@ func downloadTokenFiles() (string, string, error) {
 		})
 
 		if err != nil {
-			err = errors.Wrap(err, "s3 download failed: "+fl)
-			glog.Error(err)
+			glog.Errorf("s3 download failed: %v", err)
 			return pempub, pemprv, err
 		}
 
-		glog.Infof("download s3 file: %s (%v bytes)", i, n)
+		glog.Infof("download s3 file: %s (%v bytes)", fl, n)
 	}
 
-	pempub = tmpdir + fnames[1]
-	pemprv = tmpdir + fnames[0]
-	glog.Info(pempub, ", ", pemprv)
+	pempub = filepath.Join(constants.DATADIR, fnames[1])
+	pemprv = filepath.Join(constants.DATADIR, fnames[0])
+	glog.Infof("pempub: %v, pemprv: %v", pempub, pemprv)
 
 	return pempub, pemprv, err
 }
