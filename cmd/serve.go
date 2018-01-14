@@ -109,7 +109,7 @@ func serve(cmd *cobra.Command, args []string) {
 
 	e.GET("/testalm", func(c echo.Context) error {
 		start := time.Now()
-		ep := "https://alm-apiv3.default.svc.cluster.local/v3/access_token"
+		ep := "http://alm-apiv3.default.svc.cluster.local/v3/access_token"
 		resp, err := http.Get(ep)
 		if err != nil {
 			glog.Errorf("get failed: %v", err)
