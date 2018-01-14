@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -104,6 +105,27 @@ func serve(cmd *cobra.Command, args []string) {
 		PublicPemFile:  pempub,
 		PrivatePemFile: pemprv,
 		AwsRegion:      region,
+	})
+
+	e.GET("/testalm", func(c echo.Context) error {
+		start := time.Now()
+		ep := "https://alm-apiv3.default.svc.cluster.local/v3/access_token"
+		resp, err := http.Get(ep)
+		if err != nil {
+			glog.Errorf("get failed: %v", err)
+			return err
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			glog.Errorf("readall failed: %v", err)
+			return err
+		}
+
+		defer resp.Body.Close()
+		glog.Infof("body: %v", string(body))
+		glog.Infof("delta: %v", time.Now().Sub(start))
+		return c.NoContent(http.StatusOK)
 	})
 
 	// serve
