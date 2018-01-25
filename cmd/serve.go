@@ -52,8 +52,9 @@ func serve(cmd *cobra.Command, args []string) {
 		}
 	} else {
 		// provided from mochi secrets
-		pempub = "/etc/oath/public.key"
-		pemprv = "/etc/oath/private.key"
+		glog.V(1).Infof("secrets location: %v", constants.SECRETS)
+		pempub = filepath.Join(constants.SECRETS, "public.key")
+		pemprv = filepath.Join(constants.SECRETS, "private.key")
 	}
 
 	e := echo.New()
