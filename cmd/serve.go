@@ -35,6 +35,8 @@ func ServeCmd() *cobra.Command {
 	cmd.Flags().SortFlags = false
 	cmd.Flags().StringVar(&params.Port, "port", "8080", "server port")
 	cmd.Flags().BoolVar(&params.RunK8s, "run-k8s", true, "run inside mochi cluster")
+	cmd.Flags().StringVar(&params.PublicPemFile, "public-token-file", filepath.Join(constants.SECRETS, "public.key"), "path to public pem file")
+	cmd.Flags().StringVar(&params.PrivatePemFile, "private-token-file", filepath.Join(constants.SECRETS, "private.key"), "path to private pem file")
 	cmd.Flags().StringVar(&params.Region, "aws-region", "ap-northeast-1", "aws region to access resources")
 	cmd.Flags().StringVar(&params.Bucket, "token-bucket", "oath-store", "s3 bucket that contains our key files")
 	return cmd
@@ -45,16 +47,16 @@ func serve(cmd *cobra.Command, args []string) {
 	var err error
 
 	if !params.RunK8s {
-		pempub, pemprv, err = downloadTokenFiles()
+		_, _, err = downloadTokenFiles()
 		if err != nil {
 			err = errors.Wrap(err, "download token files failed, fatal")
 			glog.Exit(err)
 		}
+
+		_, _ = pempub, pemprv
 	} else {
 		// provided from mochi secrets
 		glog.Infof("secrets location: %v", constants.SECRETS)
-		pempub = filepath.Join(constants.SECRETS, "public.key")
-		pemprv = filepath.Join(constants.SECRETS, "private.key")
 	}
 
 	e := echo.New()
@@ -107,11 +109,7 @@ func serve(cmd *cobra.Command, args []string) {
 	})
 
 	// routes
-	v1.NewApiV1(e, &v1.ApiV1Config{
-		PublicPemFile:  pempub,
-		PrivatePemFile: pemprv,
-		AwsRegion:      params.Region,
-	})
+	v1.NewApiV1(e)
 
 	e.GET("/testalm", func(c echo.Context) error {
 		start := time.Now()

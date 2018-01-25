@@ -159,10 +159,11 @@
   name = "github.com/mobingilabs/mobingi-sdk-go"
   packages = [
     "pkg/debug",
+    "pkg/jwt",
     "pkg/private"
   ]
-  revision = "794248f344769119b3f5a6d27c980f18ff305959"
-  version = "v0.1.31"
+  revision = "269ab47439b504dd341584ebf847b52437c252d5"
+  version = "v0.1.32"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -205,7 +206,9 @@
   name = "golang.org/x/crypto"
   packages = [
     "acme",
-    "acme/autocert"
+    "acme/autocert",
+    "bcrypt",
+    "blowfish"
   ]
   revision = "3d37316aaa6bd9929127ac9a527abf408178ea7b"
 
@@ -219,11 +222,11 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "af9a21289d0040306ecc55fa668c95246f1f8425"
+  revision = "ef802241c90f84d84d644a2d8d0de8ee96038c9c"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b68e1ea16d1de345ab94da3e897231f0314f5982d442607e10a3e5717e841bc2"
+  inputs-digest = "a8a86a1a9f1e43f0d54e231afd575bb94305f04a6b483238967b6a5c3c5220b5"
   solver-name = "gps-cdcl"
   solver-version = 1

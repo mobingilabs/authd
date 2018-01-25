@@ -1,12 +1,11 @@
 package v1
 
 import (
-	"crypto/md5"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -16,6 +15,10 @@ import (
 	"github.com/golang/glog"
 	"github.com/guregu/dynamo"
 	"github.com/labstack/echo"
+	sdkjwt "github.com/mobingilabs/mobingi-sdk-go/pkg/jwt"
+	"github.com/mobingilabs/oath/pkg/creds"
+	"github.com/mobingilabs/oath/pkg/params"
+	"github.com/mobingilabs/oath/pkg/util"
 )
 
 type event struct {
@@ -38,7 +41,6 @@ type ApiV1Config struct {
 }
 
 type apiv1 struct {
-	cnf *ApiV1Config
 	prv []byte
 	pub []byte
 	e   *echo.Echo
@@ -48,11 +50,6 @@ type apiv1 struct {
 type WrapperClaims struct {
 	Data map[string]interface{}
 	jwt.StandardClaims
-}
-
-type creds struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
 }
 
 type tokenPayload struct {
@@ -72,44 +69,66 @@ func (a *apiv1) elapsed(c echo.Context) {
 
 func (a *apiv1) token(c echo.Context) error {
 	defer a.elapsed(c)
-	var stoken string
-	var claims WrapperClaims
-	var crds creds
 
-	err := c.Bind(&crds)
+	var stoken string
+	// var claims WrapperClaims
+
+	ctx, err := sdkjwt.NewCtxWithConfig(&sdkjwt.Config{
+		PublicTokenFile:  params.PublicPemFile,
+		PrivateTokenFile: params.PrivatePemFile,
+	})
+
 	if err != nil {
-		glog.Errorf("bind failed: %v", err)
+		a.simpleResponse(c, http.StatusUnauthorized, err.Error())
+		glog.Exitf("jwt ctx failed: %+v", util.ErrV(err))
+	}
+
+	var credentials creds.Credentials
+
+	body, err := ioutil.ReadAll(c.Request().Body)
+	if err != nil {
+		glog.Errorf("readall body failed: %+v", util.ErrV(err))
 		return err
 	}
 
-	md5p := fmt.Sprintf("%x", md5.Sum([]byte(fmt.Sprintf("%s", crds.Password))))
-	valid, err := a.checkdb(crds.Username, md5p)
-	if !valid || err != nil {
-		glog.Errorf("checkdb failed: %v", err)
-		a.simpleResponse(c, http.StatusUnauthorized, "invalid user")
+	defer c.Request().Body.Close()
+	glog.Infof("body (raw): %v", string(body))
+	err = json.Unmarshal(body, &credentials)
+	if err != nil {
+		glog.Errorf("unmarshal failed: %+v", util.ErrV(err))
+		return err
+	}
+
+	glog.Infof("body: %+v", credentials)
+
+	ok, err := credentials.Validate()
+	if !ok {
+		m := "credentials validation failed"
+		a.simpleResponse(c, http.StatusInternalServerError, m)
+		return errors.New(m)
+	}
+
+	if err != nil {
+		a.simpleResponse(c, http.StatusInternalServerError, err.Error())
+		glog.Errorf("credentials validation failed: %+v", util.ErrV(err))
 		return err
 	}
 
 	m := make(map[string]interface{})
-	m["username"] = crds.Username
-	m["password"] = crds.Password
-	claims.Data = m
-	claims.ExpiresAt = time.Now().Add(time.Hour * 24).Unix()
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), claims)
-	key, err := jwt.ParseRSAPrivateKeyFromPEM(a.prv)
+	m["username"] = credentials.Username
+	m["password"] = credentials.Password
+	tokenobj, stoken, err := ctx.GenerateToken(m)
 	if err != nil {
-		glog.Errorf("parse private key from pem failed: %v", err)
+		glog.Errorf("generate token failed: %+v", util.ErrV(err))
 		return err
 	}
 
-	stoken, err = token.SignedString(key)
-	if err != nil {
-		glog.Errorf("signed string failed: %v", err)
-		return err
-	}
+	glog.Infof("token (obj): %v", tokenobj)
+	glog.Infof("token: %v", stoken)
 
-	resp := tokenPayload{Key: stoken}
-	return c.JSON(http.StatusOK, resp)
+	reply := make(map[string]string)
+	reply["key"] = stoken
+	return c.JSON(http.StatusOK, reply)
 }
 
 func (a *apiv1) verify(c echo.Context) error {
@@ -159,7 +178,7 @@ func (a *apiv1) verify(c echo.Context) error {
 func (a *apiv1) checkdb(uname string, pwdmd5 string) (bool, error) {
 	sess := session.Must(session.NewSession())
 	db := dynamo.New(sess, &aws.Config{
-		Region: aws.String(a.cnf.AwsRegion),
+		Region: aws.String(params.Region),
 	})
 
 	var results []event
@@ -192,7 +211,7 @@ func (a *apiv1) checkdb(uname string, pwdmd5 string) (bool, error) {
 	}
 
 	dbsvc := dynamodb.New(sess, &aws.Config{
-		Region: aws.String(a.cnf.AwsRegion),
+		Region: aws.String(params.Region),
 	})
 
 	resp, err := dbsvc.Query(queryInput)
@@ -226,20 +245,19 @@ func (a *apiv1) checkdb(uname string, pwdmd5 string) (bool, error) {
 	return ret, err
 }
 
-func NewApiV1(e *echo.Echo, cnf *ApiV1Config) *apiv1 {
-	bprv, err := ioutil.ReadFile(cnf.PrivatePemFile)
+func NewApiV1(e *echo.Echo) *apiv1 {
+	bprv, err := ioutil.ReadFile(params.PrivatePemFile)
 	if err != nil {
 		glog.Errorf("readfile (private) failed: %v", err)
 	}
 
-	bpub, err := ioutil.ReadFile(cnf.PublicPemFile)
+	bpub, err := ioutil.ReadFile(params.PublicPemFile)
 	if err != nil {
 		glog.Errorf("readfile (public) failed: %v", err)
 	}
 
 	g := e.Group("/api/v1")
 	api := &apiv1{
-		cnf: cnf,
 		prv: bprv,
 		pub: bpub,
 		e:   e,
