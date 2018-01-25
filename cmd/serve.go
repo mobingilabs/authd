@@ -18,15 +18,10 @@ import (
 	"github.com/mobingilabs/mobingi-sdk-go/pkg/private"
 	"github.com/mobingilabs/oath/api/v1"
 	"github.com/mobingilabs/oath/pkg/constants"
+	"github.com/mobingilabs/oath/pkg/params"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
-)
-
-var (
-	port   string
-	region string
-	bucket string
 )
 
 func ServeCmd() *cobra.Command {
@@ -38,17 +33,27 @@ func ServeCmd() *cobra.Command {
 	}
 
 	cmd.Flags().SortFlags = false
-	cmd.Flags().StringVar(&port, "port", "8080", "server port")
-	cmd.Flags().StringVar(&region, "aws-region", "ap-northeast-1", "aws region to access resources")
-	cmd.Flags().StringVar(&bucket, "token-bucket", "oath-store", "s3 bucket that contains our key files")
+	cmd.Flags().StringVar(&params.Port, "port", "8080", "server port")
+	cmd.Flags().BoolVar(&params.RunK8s, "run-k8s", true, "run inside mochi cluster")
+	cmd.Flags().StringVar(&params.Region, "aws-region", "ap-northeast-1", "aws region to access resources")
+	cmd.Flags().StringVar(&params.Bucket, "token-bucket", "oath-store", "s3 bucket that contains our key files")
 	return cmd
 }
 
 func serve(cmd *cobra.Command, args []string) {
-	pempub, pemprv, err := downloadTokenFiles()
-	if err != nil {
-		err = errors.Wrap(err, "download token files failed, fatal")
-		glog.Exit(err)
+	var pempub, pemprv string
+	var err error
+
+	if !params.RunK8s {
+		pempub, pemprv, err = downloadTokenFiles()
+		if err != nil {
+			err = errors.Wrap(err, "download token files failed, fatal")
+			glog.Exit(err)
+		}
+	} else {
+		// provided from mochi secrets
+		pempub = "/etc/oath/public.key"
+		pemprv = "/etc/oath/private.key"
 	}
 
 	e := echo.New()
@@ -104,7 +109,7 @@ func serve(cmd *cobra.Command, args []string) {
 	v1.NewApiV1(e, &v1.ApiV1Config{
 		PublicPemFile:  pempub,
 		PrivatePemFile: pemprv,
-		AwsRegion:      region,
+		AwsRegion:      params.Region,
 	})
 
 	e.GET("/testalm", func(c echo.Context) error {
@@ -129,8 +134,8 @@ func serve(cmd *cobra.Command, args []string) {
 	})
 
 	// serve
-	glog.Infof("serving on :%v", port)
-	e.Server.Addr = ":" + port
+	glog.Infof("serving on :%v", params.Port)
+	e.Server.Addr = ":" + params.Port
 	gracehttp.Serve(e.Server)
 }
 
@@ -141,7 +146,7 @@ func downloadTokenFiles() (string, string, error) {
 	fnames := []string{"private.key", "public.key"}
 	sess := session.Must(session.NewSession())
 	svc := s3.New(sess, &aws.Config{
-		Region: aws.String(region),
+		Region: aws.String(params.Region),
 	})
 
 	// create dir if necessary
@@ -163,7 +168,7 @@ func downloadTokenFiles() (string, string, error) {
 		}
 
 		n, err := downloader.Download(f, &s3.GetObjectInput{
-			Bucket: aws.String(bucket),
+			Bucket: aws.String(params.Bucket),
 			Key:    aws.String(i),
 		})
 
